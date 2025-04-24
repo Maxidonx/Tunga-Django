@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}All Posts{% endblock %}
+{% block content %}
+
+<h2>Latest Posts</h2>
+{% if user.is_authenticated %}
+    <a href="{% url 'post-create' %}" class="btn">+ Create Post</a>
+{% endif %}
+<hr>
+{% for post in posts %}
+    <article>
+        <h3><a href="{% url 'post-detail-page' post.id %}">{{ post.title }}</a></h3>
+        <small>By {{ post.author.username }} | {{ post.created_at }}</small>
+        <p>{{ post.get_excerpt|safe }}</p>
+    </article>
+{% empty %}
+    <p>No posts yet.</p>
+{% endfor %}
+
+{% endblock %}

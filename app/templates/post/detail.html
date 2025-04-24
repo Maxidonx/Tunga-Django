@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+
+<article>
+    <h2>{{ post.title }}</h2>
+    <p><small>By {{ post.author.username }} | {{ post.created_at }}</small></p>
+    <div>{{ post.content|linebreaks }}</div>
+
+    {% if user == post.author %}
+        <hr>
+        <a href="{% url 'post-edit' post.id %}" class="btn">Edit</a>
+        <a href="{% url 'post-delete' post.id %}" class="btn">Delete</a>
+    {% endif %}
+</article>
+
+<a href="{% url 'post-list-page' %}">← Back to Posts</a>
+
+{% endblock %}
