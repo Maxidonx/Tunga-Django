@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Register | My Blog{% endblock %}
+
+{% block content %}
+<h2>Register</h2>
+<form id="registerForm">
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="email" name="email" placeholder="Email address" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+    <button type="submit">Create Account</button>
+</form>
+<p>Already have an account? <a href="/login/">Log in</a></p>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const payload = {
+        username: form.username.value,
+        email: form.email.value,
+        password: form.password.value,
+        confirm_password: form.confirm_password.value
+    };
+
+    const response = await fetch("/api/register/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+        alert("Registration successful!");
+        window.location.href = "/login/";
+    } else {
+        alert("Error: " + JSON.stringify(result));
+    }
+});
+</script>
+{% endblock %}
