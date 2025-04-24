@@ -87,6 +87,20 @@ DATABASES = {
 }
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'todo',
+#         'PORT': '5432',
+#         'USERNAME': 'tunga',
+#         'PASSWORD': 'bbk4GpD0tY4nNsM8BqrMyFpMuIxzXtar',
+#         'EXTERNAL DATABASE URL': 'postgresql://tunga:bbk4GpD0tY4nNsM8BqrMyFpMuIxzXtar@dpg-cvv5ib3e5dus73e9lgh0-a.oregon-postgres.render.com/todo_db_0dez',
+#         'HOST': 'dpg-cvv5ib3e5dus73e9lgh0-a.oregon-postgres.render.com',
+
+#     }
+# }
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -129,9 +143,17 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'register.CustomUser'
+AUTHENTICATION_BACKENDS = [
+    'register.auth_backend.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
+
+# REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
 }

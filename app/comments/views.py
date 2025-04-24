@@ -9,6 +9,19 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    def post_list(self, request, *args, **kwargs):
+        post_id = self.kwargs.get('post_id')
+        if post_id:
+            return self.list(request, *args, **kwargs)
+        return super().list(request, *args, **kwargs)
+    
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            self.permission_classes = [permissions.IsAuthenticated]
+        else:
+            self.permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+        return super().get_permissions()
+
     def get_queryset(self):
         post_id = self.kwargs.get('post_id')
         if post_id:

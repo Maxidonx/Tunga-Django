@@ -19,8 +19,14 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from post.views import BlogPostViewSet
 from comments.views import CommentViewSet
-from register.views import RegisterUserView
+from register.views import RegisterView, LoginView
 from user.views import UserProfileView
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+# urls.py
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+
+
 
 
 router = DefaultRouter()
@@ -30,7 +36,14 @@ router.register(r'comments', CommentViewSet, basename='comment')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('api/register/', RegisterUserView.as_view(), name='register'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/register/', RegisterView.as_view(), name='register'),
     path('api/profile/', UserProfileView.as_view(), name='user-profile'),
-    path('api/auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/login/', LoginView.as_view(), name='login'),
+    # path('api/auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/posts/<int:post_id>/comments/', CommentViewSet.as_view ({'get': 'list'}), name='post-comments'),
+
 ]
+
+urlpatterns += staticfiles_urlpatterns()
