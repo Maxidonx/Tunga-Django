@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h2>Welcome, {{ request.user.username }}</h2>
+<img src="{{ request.user.profile.profile_picture.url|default_if_none:'/static/img/default-avatar.png' }}" width="100">
+
+<h3>Your Posts</h3>
+{% for post in my_posts %}
+    <article>
+        <h4><a href="{% url 'post-detail-page' post.id %}">{{ post.title }}</a></h4>
+        <a href="{% url 'post-edit' post.id %}">Edit</a>
+        <a href="{% url 'post-delete' post.id %}">Delete</a>
+    </article>
+{% empty %}
+    <p>No posts yet.</p>
+{% endfor %}
+
+<hr>
+<h3>Other Users' Posts</h3>
+{% for post in other_posts %}
+    <article>
+        <h4><a href="{% url 'post-detail-page' post.id %}">{{ post.title }}</a></h4>
+        <span>{{ post.likes.count }} ❤️</span>
+    </article>
+{% endfor %}
+{% endblock %}

@@ -4,13 +4,8 @@
 <h2>{{ title }}</h2>
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-{% if form.image.value %}
-    <img src="{{ form.image.value.url }}" width="200">
-{% endif %}
-{{ form.image.label_tag }} {{ form.image }}
-
+    <textarea name="content" rows="3">{{ comment.content }}</textarea>
     <button type="submit">Save</button>
 </form>
-<a href="/">← Cancel</a>
+<a href="{% url 'post-detail-page' comment.post.id %}">Cancel</a>
 {% endblock %}

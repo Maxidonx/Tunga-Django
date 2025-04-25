@@ -2,6 +2,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.http import JsonResponse
 from .models import BlogPost
 from .forms import BlogPostForm
 
@@ -49,3 +50,13 @@ def blog_delete(request, post_id):
         post.delete()
         return HttpResponseRedirect('/')
     return render(request, "post/delete.html", {"post": post})
+
+
+@login_required
+def post_like_toggle(request, post_id):
+    post = get_object_or_404(BlogPost, id=post_id)
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)
+    else:
+        post.likes.add(request.user)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

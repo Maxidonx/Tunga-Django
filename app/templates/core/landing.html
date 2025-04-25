@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Welcome to BlogLand{% endblock %}
+{% block content %}
+<h2>Explore Posts</h2>
+{% for post in posts %}
+    <article>
+        <h3><a href="{% url 'post-detail-page' post.id %}">{{ post.title }}</a></h3>
+        <small>{{ post.author.username }}</small>
+    </article>
+{% empty %}
+    <p>No content yet.</p>
+{% endfor %}
+<p><a href="{% url 'login-page' %}">Login</a> or <a href="{% url 'register-page' %}">Register</a> to start posting</p>
+{% endblock %}

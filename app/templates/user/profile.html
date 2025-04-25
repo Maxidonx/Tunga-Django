@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Your Profile{% endblock %}
+{% block content %}
+
+{% if profile.cover_photo %}
+    <img src="{{ profile.cover_photo.url }}" style="width:100%; height:200px; object-fit:cover;">
+{% endif %}
+
+<h2>{{ profile.get_full_name }}</h2>
+
+<img src="{{ profile.profile_picture.url|default_if_none:'/static/img/default-avatar.png' }}" width="100">
+
+<p><strong>Email:</strong> {{ profile.user.email }}</p>
+<p><strong>Nationality:</strong> {{ profile.nationality }}</p>
+<p><strong>Bio:</strong> {{ profile.bio }}</p>
+
+<a href="{% url 'profile-edit' %}">Edit Profile</a>
+{% endblock %}

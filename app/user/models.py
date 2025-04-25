@@ -18,6 +18,13 @@ class UserProfile(models.Model):
         blank=True,
         null=True
     )
+    cover_photo = models.ImageField(upload_to='cover_photos/', blank=True, null=True)
+    bio = models.TextField(blank=True)
+    facebook = models.URLField(blank=True)
+    twitter = models.URLField(blank=True)
+    instagram = models.URLField(blank=True)
+    linkedin = models.URLField(blank=True)
+
 
     def __str__(self):
         return self.get_full_name()

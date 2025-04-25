@@ -11,6 +11,10 @@ class BlogPost(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=False)
+    image = models.ImageField(upload_to='post_images/', blank=True, null=True)
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts', blank=True)
+
+
 
     def get_excerpt(self, char_limit=100):
         return self.content[:char_limit] + "..." if len(self.content) > char_limit else self.content

@@ -4,7 +4,12 @@
 
 <article>
     <h2>{{ post.title }}</h2>
-    <p><small>By {{ post.author.username }} | {{ post.created_at }}</small></p>
+    <p>
+        <strong>By:</strong> {{ post.author.username }}<br>
+        <strong>Date:</strong> {{ post.created_at|date:"M d, Y" }}<br>
+        <strong>Likes:</strong> {{ post.likes.count }}<br>
+        <strong>Comments:</strong> {{ post.comments.count }}
+    </p>
     <div>{{ post.content|linebreaks }}</div>
 
     {% if user == post.author %}
@@ -15,5 +20,38 @@
 </article>
 
 <a href="{% url 'post-list-page' %}">← Back to Posts</a>
+
+<h3>Comments ({{ post.comments.count }})</h3>
+{% for comment in post.comments.all %}
+<div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
+    <p><strong>{{ comment.user.username }}</strong> said:</p>
+    <p>{{ comment.content|linebreaks }}</p>
+    <small>{{ comment.created_at }}</small>
+    <div>
+        <span>{{ comment.likes.count }} likes</span>
+        {% if user == comment.user %}
+            <a href="{% url 'comment-edit' comment.id %}">Edit</a>
+            <a href="{% url 'comment-delete' comment.id %}">Delete</a>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+
+{% if user.is_authenticated %}
+<form method="post" action="{% url 'post-like-toggle' post.id %}">
+    {% csrf_token %}
+    <button type="submit" style="font-size: 1.5rem; border: none; background: none;">
+        {% if user in post.likes.all %}💖{% else %}🤍{% endif %}
+    </button> {{ post.likes.count }}
+</form>
+
+{% else %}
+{% if post.image %}
+    <img src="{{ post.image.url }}" style="max-width: 100%; height: auto;" alt="post image">
+{% endif %}
+
+<p><a href="{% url 'login-page' %}">Login to comment</a></p>
+{% endif %}
+
 
 {% endblock %}
