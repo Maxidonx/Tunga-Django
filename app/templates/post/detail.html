@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}{{ post.title }}{% endblock %}
+
 {% block content %}
 
 <article>
@@ -10,7 +11,12 @@
         <strong>Likes:</strong> {{ post.likes.count }}<br>
         <strong>Comments:</strong> {{ post.comments.count }}
     </p>
-    <div>{{ post.content|linebreaks }}</div>
+
+    {% if post.image %}
+        <img src="{{ post.image.url }}" style="max-width: 100%; height: auto; margin-top: 10px;" alt="Post Image">
+    {% endif %}
+
+    <div style="margin-top: 20px;">{{ post.content|linebreaks }}</div>
 
     {% if user == post.author %}
         <hr>
@@ -19,15 +25,35 @@
     {% endif %}
 </article>
 
-<a href="{% url 'post-list-page' %}">← Back to Posts</a>
+<hr>
 
-<h3>Comments ({{ post.comments.count }})</h3>
+{% if user.is_authenticated %}
+<!-- Like Button -->
+<div id="like-container-{{ post.id }}" style="display: inline-flex; align-items: center; gap: 6px; margin-bottom: 20px;">
+    <button id="like-button-{{ post.id }}"
+        onclick="toggleLike('{{ post.id }}')"
+        style="border: none; background: none; font-size: 1.3rem; padding: 0; line-height: 1; cursor: pointer;">
+        {% if user in post.likes.all %}
+            ❤️
+        {% else %}
+            🤍
+        {% endif %}
+    </button>
+    <span id="like-count-{{ post.id }}" style="font-size: 1.0rem; line-height: 1;">{{ post.likes.count }}</span>
+</div>
+{% endif %}
+
+<a href="{% url 'post-list-page' %}"> ← Back to Posts</a>
+
+<h3 style="margin-top: 30px;">Comments ({{ post.comments.count }})</h3>
+
 {% for comment in post.comments.all %}
-<div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
+<div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0; border-radius: 8px;">
     <p><strong>{{ comment.user.username }}</strong> said:</p>
     <p>{{ comment.content|linebreaks }}</p>
-    <small>{{ comment.created_at }}</small>
-    <div>
+    <small>{{ comment.created_at|date:"M d, Y H:i" }}</small>
+
+    <div style="margin-top: 5px;">
         <span>{{ comment.likes.count }} likes</span>
         {% if user == comment.user %}
             <a href="{% url 'comment-edit' comment.id %}">Edit</a>
@@ -35,23 +61,62 @@
         {% endif %}
     </div>
 </div>
+{% empty %}
+<p>No comments yet.</p>
 {% endfor %}
 
 {% if user.is_authenticated %}
-<form method="post" action="{% url 'post-like-toggle' post.id %}">
+<!-- Comment Form -->
+<form method="post" action="{% url 'post-comment-create' post.id %}" style="margin-top: 20px;">
     {% csrf_token %}
-    <button type="submit" style="font-size: 1.5rem; border: none; background: none;">
-        {% if user in post.likes.all %}💖{% else %}🤍{% endif %}
-    </button> {{ post.likes.count }}
+    <textarea name="content" rows="3" placeholder="Write your comment..." required style="width:100%;"></textarea>
+    <button type="submit" style="margin-top: 10px;">Post Comment</button>
 </form>
-
 {% else %}
-{% if post.image %}
-    <img src="{{ post.image.url }}" style="max-width: 100%; height: auto;" alt="post image">
+<p><a href="{% url 'login-page' %}">Login</a> to comment</p>
 {% endif %}
 
-<p><a href="{% url 'login-page' %}">Login to comment</a></p>
-{% endif %}
+<!-- Like Toggle Script -->
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
 
+function toggleLike(postId) {
+    fetch(`/post/${postId}/like/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const likeButton = document.getElementById(`like-button-${postId}`);
+        const likeCount = document.getElementById(`like-count-${postId}`);
+        
+        likeButton.innerText = data.liked ? '❤️' : '🤍';
+        likeCount.innerText = data.likes_count;
+        
+        likeButton.style.transform = "scale(1.3)";
+        setTimeout(() => {
+            likeButton.style.transform = "scale(1)";
+        }, 200);
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
 
 {% endblock %}

@@ -6,35 +6,38 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
 </head>
 <body>
-<header class="container">
-    <nav>
-        <ul>
-            <li><strong><a href="{% url 'dashboard' %}">Blog</a></strong></li>
-            <li><a href="{% url 'post-list-page' %}">Posts</a></li>
-        </ul>
-        <ul>
-            {% if request.user.is_authenticated %}
-                <li><a href="{% url 'profile-page' %}">{{ request.user.username }}</a></li>
-                <li>
-                    {% if request.user.profile.profile_picture %}
-                        <img src="{{ request.user.profile.profile_picture.url }}" alt="avatar" width="30" height="30" style="border-radius: 50%;">
-                    {% else %}
-                        <img src="/static/img/default-avatar.png" alt="avatar" width="30" height="30" style="border-radius: 50%;">
-                    {% endif %}
-                </li>
-                <li>
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button type="submit" class="contrast">Logout</button>
-                    </form>
-                </li>
-            {% else %}
-                <li><a href="{% url 'login' %}">Login</a></li>
-                <li><a href="{% url 'register' %}">Register</a></li>
-            {% endif %}
-        </ul>
-    </nav>
-</header>
+    <header class="container">
+        <nav>
+            <ul>
+                <li><strong><a href="{% url 'dashboard' %}">Blog</a></strong></li>
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'post-create' %}">+ Create Post</a></li>
+                {% endif %}
+            </ul>
+            <ul>
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'profile-page' %}">{{ request.user.username }}</a></li>
+                    <li>
+                        {% if request.user.profile.profile_picture %}
+                            <img src="{{ request.user.profile.profile_picture.url }}" alt="avatar" width="30" height="30" style="border-radius: 50%;">
+                        {% else %}
+                            <img src="/static/img/default-avatar.png" alt="avatar" width="30" height="30" style="border-radius: 50%;">
+                        {% endif %}
+                    </li>
+                    <li>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="contrast">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'login-page' %}">Login</a></li>
+                    <li><a href="{% url 'register-page' %}">Register</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    
 
 <main class="container">
     {% block content %}{% endblock %}
