@@ -41,7 +41,7 @@ urlpatterns = [
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += [
     path('register/', register_page, name='register-page'),
-    path('login/', login_page, name='login-page'),
+    path('login/', login_page, name='login-pagamazinge'),
     path('logout/', LogoutView.as_view(next_page='login-page'), name='logout'),
 ]
 
