@@ -19,17 +19,20 @@
                     <li><a href="{% url 'profile-page' %}">{{ request.user.username }}</a></li>
                     <li>
                         {% if request.user.profile.profile_picture %}
-                            <img src="{{ request.user.profile.profile_picture.url }}" alt="avatar" width="30" height="30" style="border-radius: 50%;">
+                            <img src="{{ request.user.profile.profile_picture.url }}" alt="avatar" width="25" height="30" style="border-radius: 100%;">
                         {% else %}
-                            <img src="/static/img/default-avatar.png" alt="avatar" width="30" height="30" style="border-radius: 50%;">
+                            <img src="/static/img/default-avatar.png" alt="avatar" width="30" height="30" style="border-radius: 1000%;">
                         {% endif %}
                     </li>
                     <li>
-                        <form method="post" action="{% url 'logout' %}">
+                        <form method="post" action="{% url 'logout' %}" style="margin: 0;">
                             {% csrf_token %}
-                            <button type="submit" class="contrast">Logout</button>
+                            <button type="submit" class="small-button contrast" style="padding: 5px 10px; font-size: 0.8rem; border-radius: 6px;">
+                                Logout
+                            </button>
                         </form>
                     </li>
+                    
                 {% else %}
                     <li><a href="{% url 'login-page' %}">Login</a></li>
                     <li><a href="{% url 'register-page' %}">Register</a></li>

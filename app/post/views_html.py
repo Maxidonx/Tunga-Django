@@ -20,7 +20,7 @@ def blog_detail(request, post_id):
 @login_required
 def blog_create(request):
     if request.method == 'POST':
-        form = BlogPostForm(request.POST)
+        form = BlogPostForm(request.POST, request.FILES)  # ✅ request.FILES added
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
@@ -28,6 +28,7 @@ def blog_create(request):
             return HttpResponseRedirect('/')
     else:
         form = BlogPostForm()
+    
     return render(request, "post/form.html", {"form": form, "title": "Create Post"})
 
 @login_required
@@ -35,13 +36,15 @@ def blog_edit(request, post_id):
     post = get_object_or_404(BlogPost, id=post_id)
     if post.author != request.user:
         return HttpResponseForbidden("You are not allowed to edit this post.")
+    
     if request.method == 'POST':
-        form = BlogPostForm(request.POST, instance=post)
+        form = BlogPostForm(request.POST, request.FILES, instance=post)  # ✅ request.FILES added
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(f'/post/{post.id}/')
     else:
         form = BlogPostForm(instance=post)
+    
     return render(request, "post/form.html", {"form": form, "title": "Edit Post"})
 
 @login_required

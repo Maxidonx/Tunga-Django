@@ -1,41 +1,14 @@
-
 {% extends "base.html" %}
-
-{% block title %}Login | My Blog{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block content %}
 <h2>Login</h2>
+
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Login</button>
 </form>
-<p>Don't have an account? <a href="{% url 'register-page' %}">Register here</a></p>
 
-<script>
-document.getElementById("loginForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-    const form = e.target;
-    const payload = {
-        email: form.email.value,
-        password: form.password.value
-    };
-
-    const response = await fetch("/api/login/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    });
-
-    const result = await response.json();
-    if (response.ok) {
-        alert("Login successful! Token: " + result.access);
-        localStorage.setItem("access_token", result.access);
-        // redirect to dashboard or home page
-        window.location.href = "/";
-    } else {
-        alert("Login failed: " + JSON.stringify(result));
-    }
-});
-</script>
+<p>Don't have an account? <a href="{% url 'register-page' %}">Register</a></p>
 {% endblock %}
