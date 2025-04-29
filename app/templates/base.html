@@ -9,9 +9,9 @@
     <header class="container">
         <nav>
             <ul>
-                <li><strong><a href="{% url 'dashboard' %}">Blog</a></strong></li>
+                <li><strong><a href="{% url 'dashboard' %}"><h1>Blog</h1></a></strong></li>
                 {% if request.user.is_authenticated %}
-                    <li><a href="{% url 'post-create' %}">+ Create Post</a></li>
+                    <li style="margin-left: auto;"><a href="{% url 'post-create' %}">+ Create Post</a></li>
                 {% endif %}
             </ul>
             <ul>
@@ -27,7 +27,7 @@
                     <li>
                         <form method="post" action="{% url 'logout' %}" style="margin: 0;">
                             {% csrf_token %}
-                            <button type="submit" class="small-button contrast" style="padding: 5px 10px; font-size: 0.8rem; border-radius: 6px;">
+                            <button type="submit" class="small-button contrast" style="padding: 2px 4px; font-size: 0.8rem; border-radius: 6px;">
                                 Logout
                             </button>
                         </form>
