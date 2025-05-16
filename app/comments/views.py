@@ -4,6 +4,10 @@ from django.shortcuts import render
 from rest_framework import viewsets, permissions
 from .models import Comment
 from .serializers import CommentSerializer
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
+
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
@@ -30,3 +34,9 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    @action(detail=False, methods=['get'], url_path='post/(?P<post_id>[^/.]+)')
+    def post_comments(self, request, post_id=None):
+        comments = self.queryset.filter(post__id=post_id)
+        serializer = self.get_serializer(comments, many=True)
+        return Response(serializer.data)

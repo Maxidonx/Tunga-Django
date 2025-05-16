@@ -4,11 +4,14 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
+from rest_framework import permissions
 from post.views import BlogPostViewSet
 from comments.views import CommentViewSet
 from register.views import RegisterView, LoginView
 from user.views import UserProfileView
 from django.contrib.auth.views import LogoutView
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 from core.views import dashboard
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from register.views_html import login_page, register_page
@@ -19,6 +22,22 @@ from post.views_html import post_like_toggle
 from user.views_html import profile_edit, profile_view
 from django.contrib.auth.views import LogoutView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+
+
+schema_view = get_schema_view(
+   openapi.Info(
+      title="My Blog API",
+      default_version='v1',
+      description="API documentation for Blog project",
+      terms_of_service="https://www.google.com/policies/terms/",
+      authentication_classes=[],
+      contact=openapi.Contact(email="contact@myblog.local"),
+      license=openapi.License(name="BSD License"),
+   ),
+   public=True,
+   permission_classes=[permissions.AllowAny],
+)
 
 
 
@@ -35,9 +54,12 @@ urlpatterns = [
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/profile/', UserProfileView.as_view(), name='user-profile'),
     path('api/login/', LoginView.as_view(), name='login'),
-    # path('api/auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/posts/<int:post_id>/comments/', CommentViewSet.as_view ({'get': 'list'}), name='post-comments'),
     
+
+
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
 
 #Register/login/logout HTML frontend views

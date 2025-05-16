@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'drf_yasg',
+    'rest_framework_simplejwt',
 
     'post',
     'register',
@@ -164,3 +166,15 @@ REST_FRAMEWORK = {
 }
 
 LOGIN_REDIRECT_URL = '/'
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'JWT Authorization header. Example: "Bearer <your token>"',
+        }
+    },
+}
+

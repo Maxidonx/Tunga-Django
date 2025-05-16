@@ -1,7 +1,10 @@
+# register/views.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from .serializers import RegisterSerializer, LoginSerializer
 
 
@@ -14,6 +17,13 @@ def get_tokens_for_user(user):
 
 
 class RegisterView(APIView):
+    @swagger_auto_schema(
+        request_body=RegisterSerializer,
+        responses={
+            201: openapi.Response(description="User registered successfully with tokens"),
+            400: "Invalid input",
+        }
+    )
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
@@ -24,6 +34,13 @@ class RegisterView(APIView):
 
 
 class LoginView(APIView):
+    @swagger_auto_schema(
+        request_body=LoginSerializer,
+        responses={
+            200: openapi.Response(description="Login successful with tokens"),
+            400: "Invalid credentials",
+        }
+    )
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
